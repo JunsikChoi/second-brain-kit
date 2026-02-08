@@ -33,6 +33,7 @@ class SecondBrainBot(commands.Bot):
     async def setup_hook(self) -> None:
         await self.load_extension("second_brain_kit.cog_chat")
         await self.load_extension("second_brain_kit.cog_admin")
+        await self.load_extension("second_brain_kit.cog_vault")
         await self.tree.sync()
         log.info("Slash commands synced.")
 

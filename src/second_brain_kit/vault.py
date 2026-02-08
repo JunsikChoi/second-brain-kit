@@ -2,12 +2,19 @@
 
 from __future__ import annotations
 
+import json
+import logging
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import yaml
+
+if TYPE_CHECKING:
+    from .claude_runner import ClaudeRunner
+
+log = logging.getLogger(__name__)
 
 _FRONTMATTER_RE = re.compile(r"\A---\n(.*?)\n---\n?(.*)", re.DOTALL)
 
@@ -144,3 +151,55 @@ class VaultManager:
             if target <= note_tags:
                 results.append(note)
         return results
+
+    def all_tags(self) -> dict[str, int]:
+        """Return a tag → count mapping across all notes."""
+        counts: dict[str, int] = {}
+        for note in self.list_notes():
+            for tag in note.tags:
+                t = tag.lower().lstrip("#")
+                counts[t] = counts.get(t, 0) + 1
+        return dict(sorted(counts.items(), key=lambda x: -x[1]))
+
+    # ── Auto-tagging ────────────────────────────────────────────────
+
+    async def auto_tag(self, note: Note, runner: ClaudeRunner) -> list[str]:
+        """Ask Claude to suggest tags for a note based on its content.
+
+        Returns a list of suggested tag strings (lowercase, no '#').
+        The note is NOT modified; caller decides whether to apply.
+        """
+        existing = self.all_tags()
+        existing_sample = ", ".join(list(existing.keys())[:30])
+
+        prompt = (
+            "Read the following markdown note and suggest 2-5 tags for it. "
+            "Tags should be lowercase, hyphenated (e.g. 'machine-learning'), "
+            "and match the topic/domain of the note.\n\n"
+            f"Existing tags in this vault: {existing_sample}\n"
+            "Prefer reusing existing tags when appropriate.\n\n"
+            "Return ONLY a JSON array of strings, e.g. [\"python\", \"web-scraping\"]. "
+            "No explanation.\n\n"
+            f"---\nTitle: {note.title}\n\n{note.body[:2000]}"
+        )
+
+        response = await runner.run(prompt, model="haiku")
+        if response.is_error:
+            log.warning("Auto-tag failed: %s", response.text[:200])
+            return []
+
+        try:
+            tags = json.loads(response.text.strip())
+            if isinstance(tags, list):
+                return [str(t).lower().strip().lstrip("#") for t in tags if t]
+        except (json.JSONDecodeError, TypeError):
+            # Try to extract JSON array from response text
+            m = re.search(r"\[.*?\]", response.text, re.DOTALL)
+            if m:
+                try:
+                    tags = json.loads(m.group())
+                    return [str(t).lower().strip().lstrip("#") for t in tags if t]
+                except (json.JSONDecodeError, TypeError):
+                    pass
+            log.warning("Auto-tag: could not parse response: %s", response.text[:200])
+        return []

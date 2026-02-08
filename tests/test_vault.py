@@ -216,3 +216,100 @@ class TestVaultManager:
 
     def test_find_by_tags_no_match(self, vault: VaultManager) -> None:
         assert vault.find_by_tags(["nonexistent"]) == []
+
+    # ── all_tags ────────────────────────────────────────────────
+
+    def test_all_tags(self, vault: VaultManager) -> None:
+        tags = vault.all_tags()
+        assert "python" in tags
+        assert "ai" in tags
+        assert "rust" in tags
+        assert tags["python"] == 1
+
+    def test_all_tags_empty_vault(self, tmp_path: Path) -> None:
+        _write(tmp_path / "empty.md", "No frontmatter here")
+        v = VaultManager(tmp_path)
+        assert v.all_tags() == {}
+
+
+# ── auto_tag ────────────────────────────────────────────────────────
+
+
+class TestAutoTag:
+    @pytest.fixture()
+    def vault_for_tag(self, tmp_path: Path) -> VaultManager:
+        _write(
+            tmp_path / "existing.md",
+            "---\ntags:\n  - python\n  - web\n---\nSome content\n",
+        )
+        return VaultManager(tmp_path)
+
+    @pytest.mark.asyncio()
+    async def test_auto_tag_success(self, vault_for_tag: VaultManager) -> None:
+        from unittest.mock import AsyncMock
+
+        from second_brain_kit.claude_runner import ClaudeResponse
+
+        runner = AsyncMock()
+        runner.run.return_value = ClaudeResponse(
+            text='["machine-learning", "data-science"]',
+            session_id="",
+            cost_usd=0.001,
+            duration_secs=1.0,
+        )
+
+        note = Note(path=vault_for_tag.root / "test.md", body="ML training pipeline")
+        tags = await vault_for_tag.auto_tag(note, runner)
+        assert tags == ["machine-learning", "data-science"]
+        runner.run.assert_called_once()
+
+    @pytest.mark.asyncio()
+    async def test_auto_tag_error_response(self, vault_for_tag: VaultManager) -> None:
+        from unittest.mock import AsyncMock
+
+        from second_brain_kit.claude_runner import ClaudeResponse
+
+        runner = AsyncMock()
+        runner.run.return_value = ClaudeResponse(
+            text="error", session_id="", cost_usd=0.0, duration_secs=0.0, is_error=True
+        )
+
+        note = Note(path=vault_for_tag.root / "test.md", body="content")
+        tags = await vault_for_tag.auto_tag(note, runner)
+        assert tags == []
+
+    @pytest.mark.asyncio()
+    async def test_auto_tag_json_in_prose(self, vault_for_tag: VaultManager) -> None:
+        from unittest.mock import AsyncMock
+
+        from second_brain_kit.claude_runner import ClaudeResponse
+
+        runner = AsyncMock()
+        runner.run.return_value = ClaudeResponse(
+            text='Here are tags: ["python", "api"]',
+            session_id="",
+            cost_usd=0.001,
+            duration_secs=1.0,
+        )
+
+        note = Note(path=vault_for_tag.root / "test.md", body="API development")
+        tags = await vault_for_tag.auto_tag(note, runner)
+        assert tags == ["python", "api"]
+
+    @pytest.mark.asyncio()
+    async def test_auto_tag_unparseable(self, vault_for_tag: VaultManager) -> None:
+        from unittest.mock import AsyncMock
+
+        from second_brain_kit.claude_runner import ClaudeResponse
+
+        runner = AsyncMock()
+        runner.run.return_value = ClaudeResponse(
+            text="I cannot parse this as JSON",
+            session_id="",
+            cost_usd=0.001,
+            duration_secs=1.0,
+        )
+
+        note = Note(path=vault_for_tag.root / "test.md", body="content")
+        tags = await vault_for_tag.auto_tag(note, runner)
+        assert tags == []
