@@ -79,6 +79,11 @@ second-brain-kit
 | `/status` | Current session info |
 | `/system` | Set or view system prompt |
 | `/export` | Export conversation history |
+| `/search` | Search vault notes (filename, tags, body) |
+| `/notes` | List recent notes in vault |
+| `/tags` | Show all tags in vault |
+| `/save` | Save a note to vault with title, content, tags |
+| `/autotag` | Auto-tag a note using AI |
 | `/cost` | Show total cost (admin) |
 | `/sessions` | List active sessions (admin) |
 | `/kill` | Kill running Claude processes (admin) |

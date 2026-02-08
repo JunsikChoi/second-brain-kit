@@ -1,6 +1,6 @@
 # Current Session
 
-## 상태: M2 완료, M3 대기
+## 상태: M3 완료, M4 대기
 
 ## 완료된 작업
 - [x] 아이디어 검증 (Phase 1-6)
@@ -22,17 +22,26 @@
 - [x] 메시지 분할 검증 (2000자 제한, 코드블록 존중)
 - [x] 파일 첨부/전송 검증
 - [x] 테스트 수정
+- [x] Vault 매니저: Note dataclass + VaultManager (read/write/list)
+- [x] YAML frontmatter 파싱/생성 (pyyaml)
+- [x] 검색 기능 (파일명/태그/전문 검색, find_by_tags)
+- [x] all_tags(): vault 전체 태그 빈도 맵
+- [x] auto_tag(): Claude 기반 자동 태그 제안
+- [x] VaultCog: /search, /notes, /tags, /save, /autotag 슬래시 커맨드
+- [x] Vault 테스트 36개 (전체 108개, 모두 통과)
 
 ## 기술 결정
 - Python 유지 (기존 claude-discord-bot과 동일 스택)
 - Claude Code CLI만 사용 (Anthropic SDK 제거 — vault/MCP 접근에 CLI 필수)
 - 기존 봇은 개인 개발용으로 유지, 코어만 second-brain-kit으로 포팅
+- auto_tag은 haiku 모델로 비용 최소화
+- VaultManager는 동기 I/O (vault 크기가 작으므로 충분)
 
 ## 다음 작업
-- [ ] M3: Vault 매니저 (마크다운 읽기/쓰기/검색, 자동 태깅)
-- [ ] M4: MCP 매니저 (설치/설정 위저드)
-- [ ] M5: CLI 인스톨러
+- [ ] M4: MCP 매니저 (MCP 서버 레지스트리, 설치 스크립트, 설정 위저드)
+- [ ] M5: CLI 인스톨러 (Linux, Obsidian 설치 확인, vault 구조 생성, systemd 등록)
 
 ## 주의사항
 - Claude Code CLI가 로컬에 설치되어 있어야 동작
 - Owner-only 보안 모델 (단일 사용자)
+- auto_tag은 Claude API 호출 → haiku 사용으로 비용 최소화했지만 빈번 사용 시 비용 주의
