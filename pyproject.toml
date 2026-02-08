@@ -28,6 +28,7 @@ dev = [
 
 [project.scripts]
 second-brain-kit = "second_brain_kit.main:main"
+sbk-install = "second_brain_kit.installer:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

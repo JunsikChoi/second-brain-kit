@@ -1,6 +1,6 @@
 # Current Session
 
-## 상태: M4 완료, M5 대기
+## 상태: Phase 1 MVP 완료 (M1-M5)
 
 ## 완료된 작업
 - [x] 아이디어 검증 (Phase 1-6)
@@ -33,6 +33,9 @@
 - [x] MCPManager: ~/.claude.json mcpServers 읽기/쓰기/설치/제거
 - [x] MCPCog: /mcp list, /mcp install, /mcp remove, /mcp status 슬래시 커맨드 (autocomplete 포함)
 - [x] MCP 테스트 28개 (전체 136개, 모두 통과)
+- [x] CLI 인스톨러 (installer.py): 시스템 체크, Obsidian 확인, vault 구조 생성, Discord 설정, systemd 서비스
+- [x] sbk-install CLI 엔트리포인트 (pyproject.toml)
+- [x] 인스톨러 테스트 24개 (전체 160개, 모두 통과)
 
 ## 기술 결정
 - Python 유지 (기존 claude-discord-bot과 동일 스택)
@@ -42,9 +45,14 @@
 - VaultManager는 동기 I/O (vault 크기가 작으므로 충분)
 - MCP "설치"는 실제 npm install이 아닌 ~/.claude.json에 엔트리 추가 (npx -y로 온디맨드 실행)
 - MCP 설정 위저드는 Discord slash command의 optional env 파라미터로 구현
+- 인스톨러는 외부 의존성 없이 stdlib만 사용 (input/print 기반 대화형 CLI)
+- vault 템플릿: Note, TIL, Meeting + Home MOC (기존 파일 덮어쓰기 안 함)
+- systemd user service로 데몬화 (로그인 시 자동 시작)
 
 ## 다음 작업
-- [ ] M5: CLI 인스톨러 (Linux, Obsidian 설치 확인, vault 구조 생성, systemd 등록)
+- [ ] Phase 2: GUI 인스톨러 (Electron/Tauri)
+- [ ] Phase 2: 크로스 플랫폼 지원 (macOS, Windows)
+- [ ] Phase 2: 시맨틱 검색 (로컬 임베딩)
 
 ## 주의사항
 - Claude Code CLI가 로컬에 설치되어 있어야 동작

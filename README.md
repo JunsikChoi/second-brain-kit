@@ -53,13 +53,25 @@ python -m venv .venv
 source .venv/bin/activate
 
 # Install
-pip install -e ".[dev]"
+pip install -e .
 
-# Configure
+# Run the installer (interactive wizard)
+sbk-install
+```
+
+The installer will guide you through:
+1. Checking system requirements (Python 3.11+, Claude Code CLI, Obsidian)
+2. Creating your vault with starter templates
+3. Configuring Discord bot credentials
+4. Registering a systemd user service for auto-start
+
+### Manual Setup
+
+If you prefer to configure manually:
+
+```bash
 cp .env.example .env
 # Edit .env with your Discord token, owner ID, and vault path
-
-# Run
 second-brain-kit
 ```
 
@@ -68,7 +80,7 @@ second-brain-kit
 - Python 3.11+
 - [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) installed and authenticated
 - Discord bot token ([guide](https://discord.com/developers/applications))
-- Obsidian vault directory
+- Obsidian (recommended, for browsing your vault)
 
 ## Discord Commands
 
@@ -95,7 +107,7 @@ second-brain-kit
 
 ## Roadmap
 
-- [ ] **Phase 1: MVP** — Discord bot + vault manager + MCP manager + CLI installer
+- [x] **Phase 1: MVP** — Discord bot + vault manager + MCP manager + CLI installer
 - [ ] **Phase 2: Polish** — GUI installer, cross-platform, semantic search
 - [ ] **Phase 3: Community** — MCP marketplace, vault templates, mobile companion
 

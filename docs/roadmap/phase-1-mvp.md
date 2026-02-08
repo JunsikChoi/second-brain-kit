@@ -31,11 +31,11 @@ Discord에서 대화하면 로컬 Obsidian vault에 지식이 축적되는 기�
 - [x] 설정 위저드 (API 키/OAuth 입력 가이드 + Discord 슬래시 커맨드)
 
 ### M5: 인스톨러 v1
-- [ ] CLI 기반 설치 스크립트 (Linux)
-- [ ] Obsidian 설치 확인/안내
-- [ ] vault 구조 + 템플릿 자동 생성
-- [ ] Discord 봇 토큰 설정 가이드
-- [ ] 데몬 등록 (systemd user service)
+- [x] CLI 기반 설치 스크립트 (Linux)
+- [x] Obsidian 설치 확인/안내
+- [x] vault 구조 + 템플릿 자동 생성
+- [x] Discord 봇 토큰 설정 가이드
+- [x] 데몬 등록 (systemd user service)
 
 ## 완료 기준
 - 비개발자가 README를 따라 30분 내에 세팅 가능
