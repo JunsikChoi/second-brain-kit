@@ -84,6 +84,10 @@ second-brain-kit
 | `/tags` | Show all tags in vault |
 | `/save` | Save a note to vault with title, content, tags |
 | `/autotag` | Auto-tag a note using AI |
+| `/mcp list` | List available MCP servers with install status |
+| `/mcp install` | Install an MCP server (Google Calendar, Todoist, RSS) |
+| `/mcp remove` | Remove an installed MCP server |
+| `/mcp status` | Show installed MCP server status |
 | `/cost` | Show total cost (admin) |
 | `/sessions` | List active sessions (admin) |
 | `/kill` | Kill running Claude processes (admin) |

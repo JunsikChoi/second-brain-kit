@@ -25,10 +25,10 @@ Discord에서 대화하면 로컬 Obsidian vault에 지식이 축적되는 기�
 - [x] 자동 태깅 (Claude가 대화에서 주제 추출 → 태그 생성)
 
 ### M4: MCP 매니저
-- [ ] MCP 서버 레지스트리 (지원 MCP 목록)
-- [ ] 설치 스크립트 (npm install + 설정 파일 생성)
-- [ ] 3개 MCP 지원: Google Calendar, Todoist, RSS Reader
-- [ ] 설정 위저드 (API 키/OAuth 입력 가이드)
+- [x] MCP 서버 레지스트리 (지원 MCP 목록)
+- [x] 설치 스크립트 (~/.claude.json 설정 관리)
+- [x] 3개 MCP 지원: Google Calendar, Todoist, RSS Reader
+- [x] 설정 위저드 (API 키/OAuth 입력 가이드 + Discord 슬래시 커맨드)
 
 ### M5: 인스톨러 v1
 - [ ] CLI 기반 설치 스크립트 (Linux)

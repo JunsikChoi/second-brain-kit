@@ -34,6 +34,7 @@ class SecondBrainBot(commands.Bot):
         await self.load_extension("second_brain_kit.cog_chat")
         await self.load_extension("second_brain_kit.cog_admin")
         await self.load_extension("second_brain_kit.cog_vault")
+        await self.load_extension("second_brain_kit.cog_mcp")
         await self.tree.sync()
         log.info("Slash commands synced.")
 

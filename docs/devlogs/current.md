@@ -1,6 +1,6 @@
 # Current Session
 
-## 상태: M3 완료, M4 대기
+## 상태: M4 완료, M5 대기
 
 ## 완료된 작업
 - [x] 아이디어 검증 (Phase 1-6)
@@ -29,6 +29,10 @@
 - [x] auto_tag(): Claude 기반 자동 태그 제안
 - [x] VaultCog: /search, /notes, /tags, /save, /autotag 슬래시 커맨드
 - [x] Vault 테스트 36개 (전체 108개, 모두 통과)
+- [x] MCPServerDef 데이터 클래스 + 3개 MCP 레지스트리 (Google Calendar, Todoist, RSS Reader)
+- [x] MCPManager: ~/.claude.json mcpServers 읽기/쓰기/설치/제거
+- [x] MCPCog: /mcp list, /mcp install, /mcp remove, /mcp status 슬래시 커맨드 (autocomplete 포함)
+- [x] MCP 테스트 28개 (전체 136개, 모두 통과)
 
 ## 기술 결정
 - Python 유지 (기존 claude-discord-bot과 동일 스택)
@@ -36,12 +40,14 @@
 - 기존 봇은 개인 개발용으로 유지, 코어만 second-brain-kit으로 포팅
 - auto_tag은 haiku 모델로 비용 최소화
 - VaultManager는 동기 I/O (vault 크기가 작으므로 충분)
+- MCP "설치"는 실제 npm install이 아닌 ~/.claude.json에 엔트리 추가 (npx -y로 온디맨드 실행)
+- MCP 설정 위저드는 Discord slash command의 optional env 파라미터로 구현
 
 ## 다음 작업
-- [ ] M4: MCP 매니저 (MCP 서버 레지스트리, 설치 스크립트, 설정 위저드)
 - [ ] M5: CLI 인스톨러 (Linux, Obsidian 설치 확인, vault 구조 생성, systemd 등록)
 
 ## 주의사항
 - Claude Code CLI가 로컬에 설치되어 있어야 동작
 - Owner-only 보안 모델 (단일 사용자)
 - auto_tag은 Claude API 호출 → haiku 사용으로 비용 최소화했지만 빈번 사용 시 비용 주의
+- MCP install은 ~/.claude.json을 수정 → Claude Code 재시작 필요
