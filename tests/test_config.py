@@ -28,26 +28,35 @@ class TestConfig:
         assert cfg.max_budget_usd == 2.50
         assert cfg.allowed_tools == ["Read", "Write", "Bash"]
 
-    def test_missing_discord_token(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_missing_discord_token(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: pytest.TempPathFactory
+    ) -> None:
+        no_env = tmp_path / ".env.nonexistent"  # type: ignore[operator]
         monkeypatch.delenv("DISCORD_TOKEN", raising=False)
         monkeypatch.setenv("OWNER_ID", "12345")
         monkeypatch.setenv("VAULT_PATH", "/tmp")
         with pytest.raises(ValueError, match="DISCORD_TOKEN"):
-            Config.from_env()
+            Config.from_env(env_path=no_env)
 
-    def test_missing_owner_id(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_missing_owner_id(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: pytest.TempPathFactory
+    ) -> None:
+        no_env = tmp_path / ".env.nonexistent"  # type: ignore[operator]
         monkeypatch.setenv("DISCORD_TOKEN", "tok")
         monkeypatch.delenv("OWNER_ID", raising=False)
         monkeypatch.setenv("VAULT_PATH", "/tmp")
         with pytest.raises(ValueError, match="OWNER_ID"):
-            Config.from_env()
+            Config.from_env(env_path=no_env)
 
-    def test_missing_vault_path(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_missing_vault_path(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: pytest.TempPathFactory
+    ) -> None:
+        no_env = tmp_path / ".env.nonexistent"  # type: ignore[operator]
         monkeypatch.setenv("DISCORD_TOKEN", "tok")
         monkeypatch.setenv("OWNER_ID", "12345")
         monkeypatch.delenv("VAULT_PATH", raising=False)
         with pytest.raises(ValueError, match="VAULT_PATH"):
-            Config.from_env()
+            Config.from_env(env_path=no_env)
 
     def test_invalid_vault_path(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("DISCORD_TOKEN", "tok")

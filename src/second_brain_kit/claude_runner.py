@@ -4,6 +4,7 @@ import asyncio
 import json
 import logging
 import shutil
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -24,17 +25,21 @@ class ClaudeResponse:
 class ClaudeRunner:
     """Runs `claude -p` as an async subprocess and parses JSON output."""
 
+    DEFAULT_TIMEOUT_SECS = 300  # 5 minutes
+
     def __init__(
         self,
         model: str = "sonnet",
         max_budget_usd: float = 1.00,
         allowed_tools: list[str] | None = None,
         cwd: Path | None = None,
+        timeout_secs: int = DEFAULT_TIMEOUT_SECS,
     ) -> None:
         self.model = model
         self.max_budget_usd = max_budget_usd
         self.allowed_tools = allowed_tools or []
         self.cwd = cwd or Path.home()
+        self.timeout_secs = timeout_secs
         self._running_procs: dict[int, asyncio.subprocess.Process] = {}
 
     async def run(
@@ -57,6 +62,7 @@ class ClaudeRunner:
         )
         log.info("Running (ch=%d): %s", channel_id, " ".join(cmd[:6]) + " ...")
 
+        t0 = time.monotonic()
         try:
             proc = await asyncio.create_subprocess_exec(
                 *cmd,
@@ -65,8 +71,29 @@ class ClaudeRunner:
                 cwd=str(cwd or self.cwd),
             )
             self._running_procs[channel_id] = proc
-            stdout, stderr = await proc.communicate()
+            stdout, stderr = await asyncio.wait_for(
+                proc.communicate(), timeout=self.timeout_secs
+            )
             self._running_procs.pop(channel_id, None)
+        except TimeoutError:
+            proc.kill()
+            self._running_procs.pop(channel_id, None)
+            return ClaudeResponse(
+                text=f"Claude CLI가 {self.timeout_secs}초 내에 응답하지 않아 중단했습니다.",
+                session_id=session_id or "",
+                cost_usd=0.0,
+                duration_secs=float(self.timeout_secs),
+                is_error=True,
+            )
+        except FileNotFoundError:
+            self._running_procs.pop(channel_id, None)
+            return ClaudeResponse(
+                text="Claude CLI를 찾을 수 없습니다. `claude`가 PATH에 있는지 확인하세요.",
+                session_id=session_id or "",
+                cost_usd=0.0,
+                duration_secs=0.0,
+                is_error=True,
+            )
         except Exception as e:
             self._running_procs.pop(channel_id, None)
             return ClaudeResponse(
@@ -77,11 +104,23 @@ class ClaudeRunner:
                 is_error=True,
             )
 
+        elapsed = time.monotonic() - t0
         raw_stdout = stdout.decode(errors="replace")
         raw_stderr = stderr.decode(errors="replace")
         raw = raw_stdout if raw_stdout.strip() else raw_stderr
 
-        return self._parse_output(raw, session_id)
+        result = self._parse_output(raw, session_id)
+        log.info(
+            "Done (ch=%d): %.1fs, $%.4f, error=%s, session=%s",
+            channel_id,
+            elapsed,
+            result.cost_usd,
+            result.is_error,
+            (result.session_id or "")[:8],
+        )
+        if result.is_error:
+            log.warning("Claude error (ch=%d): %s", channel_id, result.text[:200])
+        return result
 
     def kill(self, channel_id: int | None = None) -> int:
         if channel_id is not None:

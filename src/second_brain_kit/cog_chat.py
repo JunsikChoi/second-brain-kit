@@ -59,6 +59,10 @@ class ChatCog(commands.Cog):
             )
 
     async def _handle_message(self, message: discord.Message) -> None:
+        log.info(
+            "Message from %s (ch=%d): %s",
+            message.author, message.channel.id, message.content[:80],
+        )
         prompt = message.content.strip()
 
         # Handle file attachments

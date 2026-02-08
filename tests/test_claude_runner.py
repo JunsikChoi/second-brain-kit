@@ -162,6 +162,6 @@ class TestRunAsync:
         try:
             resp = await runner.run("hello", channel_id=1)
             assert resp.is_error is True
-            assert "Failed" in resp.text
+            assert "Claude CLI" in resp.text
         finally:
             mod._CLAUDE_BIN = original
