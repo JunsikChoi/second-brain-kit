@@ -6,16 +6,17 @@ Discord에서 대화하면 로컬 Obsidian vault에 지식이 축적되는 기�
 ## 마일스톤
 
 ### M1: 프로젝트 기반 구축
-- [x] Node.js 프로젝트 초기화 (TypeScript)
-- [x] 기본 설정 파일 구조 (config.yaml 또는 .env)
-- [x] CI/CD 설정 (GitHub Actions: lint + test)
+- [x] Python 프로젝트 초기화 (pyproject.toml)
+- [x] 기본 설정 파일 구조 (.env + python-dotenv)
+- [x] CI/CD 설정 (GitHub Actions: ruff + mypy)
+- [x] 코어 모듈 포팅 (claude-discord-bot → second-brain-kit)
 
 ### M2: Discord 봇 코어
-- [ ] claude-discord-bot 패턴을 TypeScript로 재구현
-- [ ] discord.js 기반 봇 프레임워크
-- [ ] Claude provider (CLI 기본 + API 옵션) 연동
-- [ ] 기본 대화 루프 (메시지 → Claude → 응답)
-- [ ] 메시지 분할 (2000자 제한, 코드블록 존중)
+- [ ] 봇 실행 테스트 (로컬 환경)
+- [ ] Claude CLI 연동 검증 (메시지 → Claude → 응답 루프)
+- [ ] 메시지 분할 검증 (2000자 제한, 코드블록 존중)
+- [ ] 파일 첨부/전송 검증
+- [ ] 에러 핸들링 강화
 
 ### M3: Vault 매니저
 - [ ] 마크다운 파일 읽기/쓰기

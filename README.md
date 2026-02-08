@@ -1,6 +1,6 @@
 # Second Brain Kit
 
-> One-click setup for your AI-powered second brain. Obsidian + Claude AI + Discord, packaged for everyone.
+> One-click setup for your AI-powered second brain. Obsidian + Claude Code + Discord, packaged for everyone.
 
 ## Problem
 
@@ -22,25 +22,67 @@ Meanwhile, powerful workflows exist (Obsidian vault + Claude AI + Discord) that 
 ```
 You (Discord) ←→ Second Brain Kit ←→ Your Knowledge Vault
                       │
-                      ├── Claude API (AI reasoning)
+                      ├── Claude Code CLI (AI reasoning)
                       ├── Obsidian Vault (local Markdown)
                       ├── MCP Servers (integrations)
                       └── Auto-tagging & organization
 ```
 
 1. **Install** — Run the installer. It sets up Obsidian, vault structure, and Discord bot automatically.
-2. **Connect** — Link your Claude API key and Discord server.
+2. **Connect** — Set up your Claude Code subscription and Discord server.
 3. **Chat** — Talk to your AI second brain via Discord. It remembers everything.
 4. **Browse** — Open Obsidian anytime to see your beautifully organized knowledge base.
 
 ## Tech Stack
 
-- **Runtime**: Node.js
-- **Discord**: discord.js
-- **AI**: Anthropic Claude API
+- **Language**: Python 3.11+
+- **Discord**: discord.py
+- **AI**: Claude Code CLI (`claude -p` subprocess)
 - **Knowledge Base**: Obsidian (Markdown files)
 - **Integrations**: MCP (Model Context Protocol) servers
-- **Installer**: Electron / Tauri
+
+## Quick Start
+
+```bash
+# Clone the repo
+git clone https://github.com/JunsikChoi/second-brain-kit.git
+cd second-brain-kit
+
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate
+
+# Install
+pip install -e ".[dev]"
+
+# Configure
+cp .env.example .env
+# Edit .env with your Discord token, owner ID, and vault path
+
+# Run
+second-brain-kit
+```
+
+### Prerequisites
+
+- Python 3.11+
+- [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) installed and authenticated
+- Discord bot token ([guide](https://discord.com/developers/applications))
+- Obsidian vault directory
+
+## Discord Commands
+
+| Command | Description |
+|---------|-------------|
+| `/new` | Start a new session |
+| `/model` | Change Claude model (sonnet/opus/haiku) |
+| `/status` | Current session info |
+| `/system` | Set or view system prompt |
+| `/export` | Export conversation history |
+| `/cost` | Show total cost (admin) |
+| `/sessions` | List active sessions (admin) |
+| `/kill` | Kill running Claude processes (admin) |
+| `/budget` | Set per-turn budget (admin) |
 
 ## Roadmap
 

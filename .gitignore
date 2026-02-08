@@ -1,8 +1,15 @@
-# Dependencies
-node_modules/
-
-# Build output
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
 dist/
+build/
+.eggs/
+
+# Virtual environment
+.venv/
+venv/
 
 # Environment
 .env
@@ -23,4 +30,13 @@ Thumbs.db
 logs/
 
 # Test
+.pytest_cache/
 coverage/
+htmlcov/
+.coverage
+
+# mypy
+.mypy_cache/
+
+# ruff
+.ruff_cache/

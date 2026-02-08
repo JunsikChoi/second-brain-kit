@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "second-brain-kit"
+version = "0.1.0"
+description = "One-click AI second brain: Obsidian + Claude + Discord, packaged for everyone"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = [
+    "discord.py>=2.3",
+    "python-dotenv>=1.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+voice = [
+    "openai-whisper",
+    "pydub>=0.25",
+]
+dev = [
+    "ruff>=0.4",
+    "mypy>=1.10",
+    "pytest>=8.0",
+]
+
+[project.scripts]
+second-brain-kit = "second_brain_kit.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
