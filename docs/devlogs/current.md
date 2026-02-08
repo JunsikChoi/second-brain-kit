@@ -1,6 +1,6 @@
 # Current Session
 
-## 상태: M1 완료 (Python), M2 대기
+## 상태: M2 진행 중 (유닛 테스트 완료, 실행 테스트 대기)
 
 ## 완료된 작업
 - [x] 아이디어 검증 (Phase 1-6)
@@ -13,6 +13,7 @@
 - [x] Session store, message splitter, file handler, security
 - [x] Discord bot (SecondBrainBot + ChatCog + AdminCog)
 - [x] CI/CD 설정 (GitHub Actions: ruff + mypy)
+- [x] 코어 모듈 유닛 테스트 72개 작성 (6개 모듈 커버)
 
 ## 기술 결정
 - Python 유지 (기존 claude-discord-bot과 동일 스택)
@@ -20,7 +21,7 @@
 - 기존 봇은 개인 개발용으로 유지, 코어만 second-brain-kit으로 포팅
 
 ## 다음 작업
-- [ ] M2: 봇 실행 테스트 + 안정화
+- [ ] M2: 실제 봇 실행 테스트 (Discord 토큰 + Claude CLI 연동 E2E)
 - [ ] M3: Vault 매니저 (마크다운 읽기/쓰기/검색, 자동 태깅)
 - [ ] M4: MCP 매니저 (설치/설정 위저드)
 - [ ] M5: CLI 인스톨러
